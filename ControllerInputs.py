@@ -5,6 +5,7 @@ import re
 
 VJOY_AXIS_MAX = 32768
 
+dormant_values = None
 vjoy_device = pyvjoy.VJoyDevice(1)
 
 def scale_axis_value(value, min_value=359, max_value=1689):
@@ -70,6 +71,7 @@ def send_input_to_vjoy(values):
         print("vJoy error:", e)
 
 def stream_logcat():
+    global dormant_values
     process = subprocess.Popen(
         ['adb', 'logcat', '-v', 'time'],
         stdout=subprocess.PIPE,
@@ -89,6 +91,9 @@ def stream_logcat():
                     if val is not None:
                         last_values[key] = val
                 send_input_to_vjoy(last_values)
+                dormant_values = last_values
+            elif dormant_values:
+                  send_input_to_vjoy(dormant_values)
     except KeyboardInterrupt:
         print("Stopping...")
         process.terminate()
