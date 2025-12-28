@@ -45,7 +45,7 @@ def send_input_to_vjoy(values):
         if values.get('left_vertical') is not None:
             vjoy_device.data.wAxisY = scale_axis_value(values['left_vertical'])
         if values.get('right_horizontal') is not None:
-            vjoy_device.data.wAxisXRot = scale_axis_value(values['right_horizontal'])
+            vjoy_device.data.wAxisXRot = scale_axis_value(negate_values(values['right_horizontal']))
         if values.get('right_vertical') is not None:
             vjoy_device.data.wAxisYRot = scale_axis_value(negate_values(values['right_vertical']))
         if values.get('wheel1') is not None:
