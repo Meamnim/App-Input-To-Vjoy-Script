@@ -13,6 +13,9 @@ def scale_axis_value(value, min_value=359, max_value=1689):
     normalized = (value - min_value) / (max_value - min_value)
     return int(normalized * VJOY_AXIS_MAX)
 
+def negate_values(value, min_value=359, max_value=1689):
+    return max_value + min_value - value
+
 def extract_joystick_values(line):
     match_lh = re.search(r'leftHorizontalValue:\s*(\d+)', line)
     match_lv = re.search(r'leftVerticalValue:\s*(\d+)', line)
@@ -44,7 +47,7 @@ def send_input_to_vjoy(values):
         if values.get('right_horizontal') is not None:
             vjoy_device.data.wAxisXRot = scale_axis_value(values['right_horizontal'])
         if values.get('right_vertical') is not None:
-            vjoy_device.data.wAxisYRot = scale_axis_value(values['right_vertical'])
+            vjoy_device.data.wAxisYRot = scale_axis_value(negate_values(values['right_vertical']))
         if values.get('wheel1') is not None:
             vjoy_device.data.wAxisZ = scale_axis_value(values['wheel1'], 724, 1324)
 
